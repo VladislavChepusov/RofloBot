@@ -3,20 +3,49 @@ import logging
 import sys
 
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import CommandStart, Command
-from aiogram.types import Message, WebAppInfo, URLInputFile
+from aiogram.filters import Command
+from aiogram.types import Message, WebAppInfo, URLInputFile, InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.markdown import hide_link
 
-from private import TOKEN
+from private import TOKEN, PHOTO, URL
 
 dp = Dispatcher()
 
-@dp.message()
-async def start(message: types.Message):
-    markup = types.ReplyKeyboardMarkup()
-    button = types.KeyboardButton("Мир Вегагаза", web_app=WebAppInfo(url="https://itproger.com"))
-    markup.add(button)
-    await message.answer("ВегаКоин близко! Посетите Мир Вегагаза.", reply_markup=markup)
+
+@dp.message(Command("start"))
+async def cmd_start(message: types.Message):
+    kb = [
+        [types.KeyboardButton(text="Открыть окно 🔒")],
+        [types.KeyboardButton(text="Поговорить об Аишках")],
+
+    ]
+    keyboard = types.ReplyKeyboardMarkup(keyboard=kb)
+    await message.answer("Вы слышали про VegaCoin?", reply_markup=keyboard)
+
+
+@dp.message(Command("inline_url"))
+async def cmd_inline_url(message: types.Message, bot: Bot):
+    builder = InlineKeyboardBuilder()
+    builder.row(types.InlineKeyboardButton(
+        text="GitHub", url="https://github.com")
+    )
+    builder.row(types.InlineKeyboardButton(
+        text="Наш сайт ",
+        web_app=WebAppInfo( url=URL["vega"])
+       )
+    )
+    await message.answer('Выберите ссылку', reply_markup=builder.as_markup(), )
+
+
+@dp.message(F.text.lower() == "поговорить об аишках")
+async def with_puree(message: types.Message):
+    await message.reply("Вызываем")
+
+
+@dp.message(F.text.lower() == "открыть окно 🔒")
+async def with_puree(message: types.Message):
+    await message.reply("Скуфы этого не одобряют")
 
 
 # Ответ при вызове команды
@@ -34,11 +63,11 @@ async def cmd_hidden_link(message: Message):
 # Ответ на присланные файлы (перечисление файлов в списке хейждера)
 @dp.message(F.content_type.in_({'photo', 'sticker'}))
 async def handle_all_files(message: types.Message):
-    image_from_url = URLInputFile("https://preview.redd.it/bd7q2jvcght21.jpg?auto=webp&s=f36a77a9f383441047a7e3b3f8fa88870d2f700f")
+    image_from_url = URLInputFile(PHOTO["pepa"])
     await message.answer_photo(
         photo=image_from_url,
         caption="Ну и нахуй ты это скинул, еблан?"
-        )
+    )
 
 
 async def main() -> None:
