@@ -10,10 +10,10 @@ from aiogram.utils.markdown import hide_link
 
 from private import TOKEN, PHOTO, URL
 
-
 dp = Dispatcher()
 
-@dp.message(Command("start"))
+
+@dp.message(Command("inline_url"))
 async def cmd_start(message: types.Message):
     kb = [
         [types.KeyboardButton(text="Открыть окно 🔒")],
@@ -24,16 +24,18 @@ async def cmd_start(message: types.Message):
     await message.answer("Вы слышали про VegaCoin?", reply_markup=keyboard)
 
 
-@dp.message(Command("inline_url"))
+@dp.message(Command("start"))
 async def cmd_inline_url(message: types.Message, bot: Bot):
     builder = InlineKeyboardBuilder()
     builder.row(types.InlineKeyboardButton(
-        text="GitHub", url="https://github.com")
+        text="VegaCoin🪙",
+        web_app=WebAppInfo(url=URL["clickApp"])
+    )
     )
     builder.row(types.InlineKeyboardButton(
-        text="Наш сайт ",
-        web_app=WebAppInfo( url=URL["vega"])
-       )
+        text="Info",
+        web_app=WebAppInfo(url=URL["vega"])
+    )
     )
     await message.answer('Выберите ссылку', reply_markup=builder.as_markup(), )
 
