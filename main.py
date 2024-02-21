@@ -10,8 +10,8 @@ from aiogram.utils.markdown import hide_link
 
 from private import TOKEN, PHOTO, URL
 
-dp = Dispatcher()
 
+dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
