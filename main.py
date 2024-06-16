@@ -8,10 +8,14 @@ from aiogram.filters import Command
 from aiogram.types import WebAppInfo, URLInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from private import TOKEN, PHOTO, URL
+from private import TOKEN, PHOTO, URL, PROXY
+from aiogram.client.session.aiohttp import AiohttpSession
+
 
 dp = Dispatcher()
-bot = Bot(TOKEN)
+session = AiohttpSession(proxy=PROXY)
+bot = Bot(token=TOKEN, session=session)
+
 
 
 @dp.message(Command("start"))
@@ -44,6 +48,11 @@ async def start(message: types.Message):
     builder.row(types.InlineKeyboardButton(
         text="Info",
         web_app=WebAppInfo(url=URL["vega"])
+    ))
+
+    builder.row(types.InlineKeyboardButton(
+        text="Game",
+        web_app=WebAppInfo(url=URL["game"])
     ))
 
     await message.answer('Выберите ссылку', reply_markup=builder.as_markup(), )
